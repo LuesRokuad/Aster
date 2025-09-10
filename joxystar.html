@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aster — Site artistique, smooth & interactif</title>
+  <meta name="description" content="Une landing page ultra‑fluide, artistique et immersive, avec animations smooth, parallax, glassmorphism et micro‑interactions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Clash+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ====== Variables & Base ====== */
+    :root{
+      --bg: #0b0b0f;
+      --bg-2: #0f1117;
+      --txt: #e7e9ee;
+      --muted: #a8b0c2;
+      --acc: #7c5cff;   /* violet néon */
+      --acc-2: #00e0ff; /* cyan néon   */
+      --glass: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.08);
+      --radius: 20px;
+      --shadow: 0 10px 30px rgba(0,0,0,.4), 0 0 1px rgba(255,255,255,.05) inset;
+    }
+    *{box-sizing: border-box}
+    html,body{height:100%}
+
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; background:var(--bg); color:var(--txt);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      line-height:1.6; overflow-x:hidden;
+    }
+    .wrap{width:min(1200px, 92vw); margin-inline:auto}
+    a{color:inherit; text-decoration:none}
+    .accent{color:var(--acc)}
+
+    /* ====== Header ====== */
+    header{
+      position:fixed; inset:0 0 auto 0; height:72px; z-index:50; display:grid; place-items:center;
+      backdrop-filter: blur(8px); background: linear-gradient( to bottom, rgba(15,17,23,.75), rgba(15,17,23,.35) );
+      border-bottom:1px solid var(--stroke);
+    }
+    nav{display:flex; align-items:center; justify-content:space-between; gap:18px; width:100%}
+    .brand{font-family:"Clash Display", Inter, system-ui; font-weight:700; letter-spacing:.4px; font-size: clamp(18px, 2vw, 24px); display:flex; align-items:center; gap:10px}
+    .brand .dot{width:8px; height:8px; border-radius:999px; background: radial-gradient(circle at 30% 30%, var(--acc), #5428ff)}
+    .links{display:flex; gap:14px; align-items:center}
+    .btn{
+      padding:.75rem 1.1rem; border:1px solid var(--stroke); border-radius:999px; background:var(--glass);
+      transition:.35s ease; font-weight:600; letter-spacing:.3px; position:relative; overflow:hidden;
+    }
+    .btn:hover{transform: translateY(-2px); box-shadow:0 6px 22px rgba(124,92,255,.25)}
+    .btn.primary{border-color:transparent; background:linear-gradient(135deg, var(--acc), var(--acc-2)); color:#0b0b0f}
+
+    /* ====== Hero ====== */
+    .hero{position:relative; padding-top:clamp(110px, 12vh, 140px)}
+    .hero .canvas-bg{position:fixed; inset:0; z-index:-2}
+    .hero .noise{position:fixed; inset:-10%; z-index:-1; opacity:.06; pointer-events:none; filter:contrast(130%)}
+    .hero .gradient-top{position:fixed; inset:-40% -40% 40% -40%; z-index:-1; background:radial-gradient(50% 40% at 50% 0%, rgba(124,92,255,.35), transparent 60%), radial-gradient(40% 30% at 80% 20%, rgba(0,224,255,.28), transparent 55%)}
+
+    .hero-grid{display:grid; grid-template-columns:1.2fr 1fr; align-items:center; gap: min(6vw, 48px); padding: 8vh 0 14vh}
+    @media (max-width: 980px){ .hero-grid{grid-template-columns:1fr} }
+
+    .kicker{color:var(--muted); letter-spacing:.32em; text-transform:uppercase; font-weight:600; font-size:.86rem}
+    h1{font-family:"Clash Display", Inter, system-ui; line-height:1.05; margin:.4rem 0 1.1rem; font-size: clamp(40px, 8vw, 84px)}
+    .lead{font-size: clamp(16px, 2.1vw, 20px); color:#cdd3e0}
+
+    .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:26px}
+
+    /* Glass card */
+    .glass{background: linear-gradient( to bottom right, rgba(255,255,255,.08), rgba(255,255,255,.03) ); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow:var(--shadow)}
+    .hero-card{padding:20px; display:grid; gap:12px}
+    .hero-card .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+    .pill{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--stroke); padding:.4rem .75rem; border-radius:999px; font-size:.9rem; background:var(--glass)}
+
+    /* ====== Sections ====== */
+    section{padding: 8vh 0}
+    .section-title{font-family:"Clash Display"; font-size: clamp(26px, 4vw, 40px); margin:0 0 18px}
+    .muted{color:var(--muted)}
+
+    .gallery{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px}
+    .tile{grid-column: span 4; aspect-ratio: 4/3; border-radius: 18px; overflow:hidden; position:relative; transform-style:preserve-3d; perspective:1000px}
+    .tile img{width:100%; height:100%; object-fit:cover; filter:saturate(1.05) contrast(1.02)}
+    .tile::after{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(11,11,15,.6), transparent 40%)}
+    @media (max-width: 980px){ .tile{grid-column: span 6} }
+    @media (max-width: 640px){ .tile{grid-column: span 12} }
+
+    .card-grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:16px}
+    .card{grid-column: span 4; padding:22px; position:relative; overflow:hidden}
+    .card h3{margin:6px 0 8px; font-size:1.3rem}
+    .card p{margin:0; color:#cfd6e6}
+    .card .shine{position:absolute; inset:-30% -10% auto -10%; height:120%; background: conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.25), transparent 60%); filter: blur(30px); opacity:.0; transition:.6s ease}
+    .card:hover .shine{opacity:.8; transform: rotate(20deg)}
+
+    .feature{display:flex; gap:18px; align-items:flex-start}
+    .feature .ic{width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:linear-gradient(135deg, var(--acc), var(--acc-2)); color:#0b0b0f; font-weight:800}
+
+    /* ====== Marquee ====== */
+    .marquee{border:1px solid var(--stroke); border-left:none; border-right:none; background:rgba(255,255,255,.02); overflow:hidden}
+    .marquee .row{display:flex; gap:40px; white-space:nowrap; animation: slide 22s linear infinite}
+    .marquee .row span{opacity:.8; letter-spacing:.2em}
+    @keyframes slide{to{transform:translateX(-50%)}}
+
+    /* ====== Footer / Contact ====== */
+    form{display:grid; gap:12px; grid-template-columns: 1fr 1fr;}
+    form input, form textarea{
+      width:100%; padding:14px 16px; border-radius:14px; border:1px solid var(--stroke); background:rgba(255,255,255,.03); color:var(--txt); outline:none; transition:.25s ease
+    }
+    form textarea{grid-column: span 2; min-height:130px; resize:vertical}
+    form input:focus, form textarea:focus{border-color: rgba(124,92,255,.5); box-shadow:0 0 0 4px rgba(124,92,255,.14)}
+
+    footer{padding: 10vh 0 14vh; color:#9aa3b7}
+    .foot{display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap}
+
+    /* ====== Cursor ====== */
+    .cursor{position:fixed; left:0; top:0; width:20px; height:20px; border-radius:50%; pointer-events:none; z-index:100; border:1px solid rgba(255,255,255,.7); mix-blend-mode: difference; transform: translate(-50%, -50%);}
+
+    /* ====== Reveal Anim ====== */
+    .reveal{opacity:0; transform: translateY(24px); transition: .8s cubic-bezier(.2,.8,.2,1)}
+    .reveal.show{opacity:1; transform:none}
+
+    /* ====== Magnetic buttons ====== */
+    .magnet{--x:0px; --y:0px; --r:0deg; transform: translate(var(--x), var(--y)) rotate(var(--r)); transition: transform .2s ease}
+
+    /* ====== Utility ====== */
+    .center{display:grid; place-items:center}
+    .right{display:flex; justify-content:flex-end}
+    .mt-2{margin-top:12px}
+    .mt-4{margin-top:24px}
+  </style>
+</head>
+<body>
+  <!-- Décor animé: gradient + bruit + canvas particules -->
+  <div class="hero">
+    <canvas class="canvas-bg" id="stars" aria-hidden="true"></canvas>
+    <svg class="noise" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <filter id="n" x="0" y="0">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" stitchTiles="stitch" />
+      </filter>
+      <rect width="100" height="100" filter="url(#n)"></rect>
+    </svg>
+    <div class="gradient-top" aria-hidden="true"></div>
+
+    <header>
+      <div class="wrap">
+        <nav>
+          <a class="brand" href="#top"><span class="dot"></span> Aster</a>
+          <div class="links">
+            <a class="btn magnet" href="#work">Travaux</a>
+            <a class="btn magnet" href="#about">À propos</a>
+            <a class="btn magnet" href="#contact">Contact</a>
+            <a class="btn primary magnet" href="#contact">Démarrer</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top" class="wrap hero-grid">
+      <div>
+        <div class="kicker reveal">Studio créatif — Art numérique</div>
+        <h1 class="reveal" style="transition-delay:.06s">Du <span class="accent">réel</span> à l’<span class="accent">irréel</span>,
+          une expérience web <em>smooth</em> qui respire l’art.</h1>
+        <p class="lead reveal" style="transition-delay:.12s">Un site qui glisse comme du beurre, avec des micro‑interactions qui donnent vie à chaque mouvement. Parfait pour un portfolio, une marque ou un événement premium.</p>
+        <div class="cta-row reveal" style="transition-delay:.18s">
+          <a class="btn primary magnet" href="#work">Voir la démo</a>
+          <a class="btn magnet" href="#about">Pourquoi c’est différent</a>
+        </div>
+        <div class="mt-4 reveal" style="transition-delay:.22s">
+          <span class="pill">⚡ 120fps micro‑interactions</span>
+          <span class="pill">🧊 Glassmorphism</span>
+          <span class="pill">🎯 Parallax précis</span>
+        </div>
+      </div>
+      <aside class="hero-card glass reveal" style="transition-delay:.2s">
+        <div class="stats">
+          <div class="glass center" style="padding:16px; border-radius:14px;">
+            <div style="font-size:1.8rem; font-weight:800">+12K</div>
+            <div class="muted" style="font-size:.9rem">pixels animés</div>
+          </div>
+          <div class="glass center" style="padding:16px; border-radius:14px;">
+            <div style="font-size:1.8rem; font-weight:800"><span id="stat-fps">60</span> fps</div>
+            <div class="muted" style="font-size:.9rem">moyenne cible</div>
+          </div>
+          <div class="glass center" style="padding:16px; border-radius:14px;">
+            <div style="font-size:1.8rem; font-weight:800">0.2s</div>
+            <div class="muted" style="font-size:.9rem">latence perçue</div>
+          </div>
+        </div>
+        <div class="glass" style="padding:14px 16px; border-radius:14px">
+          <div style="display:flex; align-items:center; gap:10px"><span class="pill">✨ Cinematic smooth</span> <span class="pill">🌀 Motion clair</span></div>
+          <p class="muted" style="margin:.6rem 0 0">Mini‑demo: bouge ta souris, scroll, clique — tout réagit avec subtilité. C’est clean, doux et vivant.</p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Marquee -->
+  <div class="marquee" aria-hidden="true">
+    <div class="row wrap">
+      <span>ART • INTERACTIVITÉ • PARALLAX • GLASS • RÉALISME NUMÉRIQUE •</span>
+      <span>ART • INTERACTIVITÉ • PARALLAX • GLASS • RÉALISME NUMÉRIQUE •</span>
+      <span>ART • INTERACTIVITÉ • PARALLAX • GLASS • RÉALISME NUMÉRIQUE •</span>
+      <span>ART • INTERACTIVITÉ • PARALLAX • GLASS • RÉALISME NUMÉRIQUE •</span>
+    </div>
+  </div>
+
+  <!-- Travaux / Gallery -->
+  <section id="work" class="wrap">
+    <h2 class="section-title reveal">Showcase immersif</h2>
+    <p class="muted reveal" style="max-width:60ch">Un grid cinématographique avec tilt 3D subtil et lueur spéculaire. Remplace les images par tes visuels (projets, produits, lieux, portraits…).</p>
+    <div class="gallery mt-4">
+      <figure class="tile glass reveal"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop" alt="Nébuleuse"/></figure>
+      <figure class="tile glass reveal"><img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1600&auto=format&fit=crop" alt="Ville de nuit"/></figure>
+      <figure class="tile glass reveal"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop" alt="Désert futuriste"/></figure>
+      <figure class="tile glass reveal"><img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1600&auto=format&fit=crop" alt="Montagnes"/></figure>
+      <figure class="tile glass reveal"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop" alt="Sable et lignes"/></figure>
+      <figure class="tile glass reveal"><img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1600&auto=format&fit=crop" alt="City vapor"/></figure>
+    </div>
+  </section>
+
+  <!-- Features / Valeur -->
+  <section id="about" class="wrap">
+    <h2 class="section-title reveal">Pourquoi c’est différent</h2>
+    <div class="card-grid">
+      <div class="card glass reveal">
+        <div class="shine"></div>
+        <div class="feature"><div class="ic">1</div><div>
+          <h3>Motion design sans lourdeur</h3>
+          <p>Des animations contrôlées au scroll & au pointeur, optimisées en <em>requestAnimationFrame</em>, pas de lib lourdes.</p>
+        </div></div>
+      </div>
+      <div class="card glass reveal">
+        <div class="shine"></div>
+        <div class="feature"><div class="ic">2</div><div>
+          <h3>Esthétique glass & néon chic</h3>
+          <p>Ambiance premium: blur subtil, relief propre, reflets coniques, couleurs néon qui claquent.</p>
+        </div></div>
+      </div>
+      <div class="card glass reveal">
+        <div class="shine"></div>
+        <div class="feature"><div class="ic">3</div><div>
+          <h3>Parallax précis & tilt 3D</h3>
+          <p>Chaque tile réagit à l’angle de la souris. Juste ce qu’il faut de 3D pour la sensation <strong>réaliste</strong>.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="wrap">
+    <h2 class="section-title reveal">Parlons de ton projet</h2>
+    <p class="muted reveal">Envoie un message. Réponse rapide avec idées, budget et planning.
+    </p>
+    <form class="reveal" onsubmit="event.preventDefault(); alert('Merci ! Ton message a été envoyé (démo).'); this.reset();">
+      <input placeholder="Ton nom" required>
+      <input type="email" placeholder="Email" required>
+      <textarea placeholder="Ton message…"></textarea>
+      <div class="right"><button class="btn primary magnet" type="submit">Envoyer</button></div>
+    </form>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <div>© <span id="year"></span> Aster — Studio créatif. Tous droits réservés.</div>
+      <div>Fait avec 💜 et un soupçon de magie.</div>
+    </div>
+  </footer>
+
+  <div class="cursor" id="cursor"></div>
+
+  <script>
+    /* ====== Canvas étoiles / particules ====== */
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W,H, dpr = Math.min(window.devicePixelRatio || 1, 2), particles = [];
+    const N = 160; // nombre de particules
+    function resize(){
+      W = canvas.width = innerWidth * dpr; H = canvas.height = innerHeight * dpr;
+      canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px';
+    }
+    resize(); addEventListener('resize', resize);
+    const rand = (a,b)=>a+Math.random()*(b-a);
+    for(let i=0;i<N;i++) particles.push({x:rand(0,W), y:rand(0,H), r:rand(0.4,2.2), vx:rand(-.2,.2), vy:rand(-.15,.15), a:rand(.2,.8)});
+
+    let last=0, fps=60;
+    function loop(t){
+      const dt = (t - last)/1000; last = t; fps = Math.round(1/Math.max(dt,1/120));
+      ctx.clearRect(0,0,W,H);
+      // gradient profondeur
+      const g = ctx.createRadialGradient(W*.5, H*.2, 50, W*.5, H*.2, Math.max(W,H)*.8);
+      g.addColorStop(0, 'rgba(124,92,255,.12)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+      // particules
+      ctx.globalCompositeOperation = 'lighter';
+      particles.forEach(p=>{
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0||p.x>W) p.vx*=-1; if(p.y<0||p.y>H) p.vy*=-1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(124,92,255,${p.a})`; ctx.fill();
+      });
+      // fines liaisons pour réalisme
+      for(let i=0;i<N;i++){
+        for(let j=i+1;j<i+10 && j<N;j++){
+          const a = particles[i], b=particles[j];
+          const dx=a.x-b.x, dy=a.y-b.y, dist=Math.hypot(dx,dy);
+          if(dist<140*dpr){
+            ctx.strokeStyle = `rgba(0,224,255,${(1 - dist/(140*dpr))*.12})`;
+            ctx.lineWidth = 1*dpr; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      ctx.globalCompositeOperation = 'source-over';
+      requestAnimationFrame(loop);
+      const s = document.getElementById('stat-fps'); if(s) s.textContent = fps;
+    }
+    requestAnimationFrame(loop);
+
+    /* ====== Reveal au scroll ====== */
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} })
+    }, {threshold:.2});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    /* ====== Tilt 3D sur .tile ====== */
+    function tilt(el){
+      el.addEventListener('mousemove', (e)=>{
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left)/r.width - .5; // -0.5..0.5
+        const y = (e.clientY - r.top)/r.height - .5;
+        el.style.transform = `perspective(900px) rotateX(${(-y*8).toFixed(2)}deg) rotateY(${(x*10).toFixed(2)}deg) translateZ(0)`;
+      });
+      el.addEventListener('mouseleave', ()=> el.style.transform='');
+    }
+    document.querySelectorAll('.tile').forEach(tilt);
+
+    /* ====== Magnetic Buttons ====== */
+    const magnets = document.querySelectorAll('.magnet');
+    magnets.forEach(m => {
+      m.addEventListener('mousemove', (e)=>{
+        const r=m.getBoundingClientRect(), mx=e.clientX-(r.left+r.width/2), my=e.clientY-(r.top+r.height/2);
+        m.style.setProperty('--x', (mx*.08)+'px'); m.style.setProperty('--y', (my*.08)+'px'); m.style.setProperty('--r', (mx*.02)+'deg');
+      });
+      m.addEventListener('mouseleave', ()=>{ m.style.setProperty('--x','0px'); m.style.setProperty('--y','0px'); m.style.setProperty('--r','0deg'); });
+    });
+
+    /* ====== Custom Cursor ====== */
+    const cursor = document.getElementById('cursor');
+    let cx=0, cy=0, tx=0, ty=0; const ease=.2;
+    addEventListener('mousemove', (e)=>{ tx=e.clientX; ty=e.clientY; });
+    function cursorLoop(){ cx += (tx-cx)*ease; cy += (ty-cy)*ease; cursor.style.transform = `translate(${cx-10}px, ${cy-10}px)`; requestAnimationFrame(cursorLoop); }
+    cursorLoop();
+
+    /* ====== Année ====== */
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
